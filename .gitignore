@@ -1,4 +1,5 @@
 *.pyc
 .idea/
 /td_venv/
+/db_filling/
 __pycache__/
