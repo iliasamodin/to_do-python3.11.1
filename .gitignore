@@ -1,0 +1,4 @@
+*.pyc
+.idea/
+/td_venv/
+__pycache__/
