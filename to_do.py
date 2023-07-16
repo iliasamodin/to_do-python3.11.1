@@ -1,6 +1,20 @@
 # Importing a Flask class that generates a central framework object that implements a WSGI application
 from flask import Flask
 from flask import render_template                   # Import html template render function into dynamic page with jinja2
+# Importing functions to redirect requests to other views and to generate a url from the name of a view
+from flask import redirect, url_for
+# Import object containing information about the context of the request,
+#   the flash function for passing quick messages to template
+#   and the g object intended for passing the values of variables 
+#   from one view to another within a single request to the site
+from flask import request, flash, g
+# Importing a class for working with user authorization 
+#   and functions for performing authorization from the external library flask_login
+from flask_login import LoginManager, login_user
+# Import a function that hashes the user's password to store the hash sum of the password in the database
+from werkzeug.security import generate_password_hash
+# Importing class for executing sql queries to the database and user authorization class
+from superstructures import ConnectionToDB, UserLogin
 import sqlite3, os
 
 # Application Configuration
@@ -10,12 +24,40 @@ DEBUG = True
 app = Flask(__name__)
 app.config.from_object(__name__)
 app.config.update(dict(DATABASE=os.path.join(app.root_path, "db.sqlite3")))
+login_manager = LoginManager(app)              # Declaring an authorization class object based on the application-object
 
 
 def db_connection():
     connection = sqlite3.connect(app.config["DATABASE"])
     connection.row_factory = sqlite3.Row                           # Converting records from tables to a dictionary type
     return connection
+
+
+# Decorator that characterizes a function inside the application as code 
+#   that must be executed after the http request is accepted by the web server, 
+#   but before the corresponding view is processed
+@app.before_request
+def connection_to_db_via_g():  # Implementing a single database connection across the entire query
+    # Checking whether a connection was previously made in the database within the current request
+    if not hasattr(g, "connection_to_db"):
+        g.connection_to_db = ConnectionToDB(db_connection())
+
+
+# A decorator that wraps a function that forms an object of the authorization class 
+#   based on the user_id recorded in the session of the current request
+# The function wrapped with the user_loader decorator is executed only 
+#   if the user_id is present in the session of the current request. 
+#   In this case, the wrapped function will be executed before the before_request decorator function
+@login_manager.user_loader
+def user_loading(user_id):
+    connection_to_db_via_g()
+    return UserLogin(user_id, g.connection_to_db)
+
+
+@app.teardown_appcontext                         # Decorator responsible for processes executed after request processing
+def close_db_connection(error):
+    if hasattr(g, "connection_to_db"):
+        g.connection_to_db.close()                                   # Closing the database connection after processing a request
 
 
 page_title = "To-Do"
@@ -26,9 +68,31 @@ def welcome_to_to_do():
     return render_template("to_do/welcome_to_to_do.html", page_title=page_title)
 
 
-@app.route("/sign-up/")
+# The "methods" argument to the "route" method on the application object takes a list of methods 
+#   that the page view can process. 
+#   By default, the "methods" argument is equals to a list with one "get" method. 
+#   The "get" method must be passed to the "methods" argument, since the "get" method is used to request "html" pages
+@app.route("/sign-up/", methods=["GET", "POST"])
 def sign_up_to_do():
-    return "pass"
+    if request.method == "POST":
+        username = request.form["username"]
+        if g.connection_to_db.get_first_record("users", "username", username) is False:
+            password = request.form["password1"]
+            if password == request.form["password2"]:
+                hash_sum_of_password = generate_password_hash(password)
+                new_user = g.connection_to_db.add_new_user(username, hash_sum_of_password)
+                # Authorization with remembering the registered user
+                login_user(UserLogin(user=new_user), remember=True)
+
+                return redirect(url_for("current_tasks_to_do"))
+            else: 
+                # Instant messages allow you to add information to the html template 
+                #   in response to user actions on the page
+                flash("Different passwords entered")
+        else:
+            flash("User with the same name already exists")
+
+    return render_template("to_do/sign_up_to_do.html", page_title=page_title)
 
 
 @app.route("/login/")
