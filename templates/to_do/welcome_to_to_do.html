@@ -1,0 +1,12 @@
+{% extends "index.html" %}
+
+{% block application %}
+<article class="to_do welcome">
+    <h1>Welcome to To-Do</h1>
+
+    <ul>
+        <li><a href="{{ url_for('login_to_do') }}">Login</a></li>
+        <li><a href="{{ url_for('sign_up_to_do') }}">Sign up</a></li>
+    </ul>
+</article>
+{% endblock %}
