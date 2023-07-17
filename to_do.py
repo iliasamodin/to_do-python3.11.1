@@ -11,8 +11,13 @@ from flask import request, flash, g
 # Importing a class for working with user authorization 
 #   and functions for performing authorization from the external library flask_login
 from flask_login import LoginManager, login_user
+# Importing a decorator that restricts unauthorized users from accessing views that are wrapped with this decorator
+from flask_login import login_required
 # Import a function that hashes the user's password to store the hash sum of the password in the database
 from werkzeug.security import generate_password_hash
+# Importing a function to match the hash sum of the user's password from the database 
+#   with the user's password received through the authorization form
+from werkzeug.security import check_password_hash
 # Importing class for executing sql queries to the database and user authorization class
 from superstructures import ConnectionToDB, UserLogin
 import sqlite3, os
@@ -25,6 +30,9 @@ app = Flask(__name__)
 app.config.from_object(__name__)
 app.config.update(dict(DATABASE=os.path.join(app.root_path, "db.sqlite3")))
 login_manager = LoginManager(app)              # Declaring an authorization class object based on the application-object
+# Declaring a view that processes requests from unauthorized users 
+#   to pages that require authorization in the request session
+login_manager.login_view = "login_to_do"
 
 
 def db_connection():
@@ -95,32 +103,52 @@ def sign_up_to_do():
     return render_template("to_do/sign_up_to_do.html", page_title=page_title)
 
 
-@app.route("/login/")
+@app.route("/login/", methods=["GET", "POST"])
 def login_to_do():
-    return "pass"
+    if request.method == "POST":
+        username = request.form["username"]
+        user = g.connection_to_db.get_first_record("users", "username", username)
+        if user and check_password_hash(user["password"], request.form["password"]):
+            login_user(UserLogin(user=user), remember=True)
+
+            # If the next method is present in the get-request of the authorization page, 
+            #   then the authorization page was requested by redirecting an unauthorized user 
+            #   using the login_required decorator, 
+            #   so after authorization the user is redirected to the page 
+            #   that was requested before login_required was triggered
+            return redirect(request.args.get("next") or url_for("current_tasks_to_do"))
+        else:
+            flash("There is no user with this username and password")
+
+    return render_template("to_do/login_to_do.html", page_title=page_title)
 
 
 @app.route("/<calling_page>/create-task/")
+@login_required
 def create_task_to_do(calling_page):
     return "pass"
 
 
 @app.route("/tasks-for-today/")
+@login_required
 def tasks_for_today_to_do():
     return "pass"
 
 
 @app.route("/current-tasks/")
+@login_required
 def current_tasks_to_do():
     return "pass"
 
 
 @app.route("/completed-tasks/")
+@login_required
 def completed_tasks_to_do():
     return "pass"
 
 
 @app.route("/<calling_page>/task-<int:task_id>/")
+@login_required
 def change_task_to_do(calling_page, task_id):
     return "pass"
 
