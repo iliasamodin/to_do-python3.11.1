@@ -13,6 +13,7 @@ from flask import request, flash, g
 from flask_login import LoginManager, login_user
 # Importing a decorator that restricts unauthorized users from accessing views that are wrapped with this decorator
 from flask_login import login_required
+from flask_login import logout_user                        # Importing the function to log out the user from the account
 # Import a function that hashes the user's password to store the hash sum of the password in the database
 from werkzeug.security import generate_password_hash
 # Importing a function to match the hash sum of the user's password from the database 
@@ -121,6 +122,14 @@ def login_to_do():
             flash("There is no user with this username and password")
 
     return render_template("to_do/login_to_do.html", page_title=page_title)
+
+
+@app.route("/logout/", methods=["GET", "POST"])
+@login_required
+def logout_to_do():
+    if request.method == "POST":
+        logout_user()
+        return redirect(url_for("welcome_to_to_do"))
 
 
 @app.route("/<calling_page>/create-task/")
