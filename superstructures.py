@@ -56,3 +56,7 @@ class UserLogin(UserMixin):
 
     def get_id(self):
         return str(self._user["id"])
+
+    @property
+    def username(self):
+        return str(self._user["username"])
