@@ -88,22 +88,25 @@ def welcome_to_to_do():
 @app.route("/sign-up/", methods=["GET", "POST"])
 def sign_up_to_do():
     if request.method == "POST":
-        username = request.form["username"]
-        if g.connection_to_db.get_first_record("users", "username", username) is False:
-            password = request.form["password1"]
-            if password == request.form["password2"]:
-                hash_sum_of_password = generate_password_hash(password)
-                new_user = g.connection_to_db.add_new_user(username, hash_sum_of_password)
-                # Authorization with remembering the registered user
-                login_user(UserLogin(user=new_user), remember=True)
+        try:
+            username = request.form["username"]
+            if g.connection_to_db.get_first_record("users", "username", username) is False:
+                password = request.form["password1"]
+                if password == request.form["password2"]:
+                    hash_sum_of_password = generate_password_hash(password)
+                    new_user = g.connection_to_db.add_new_user(username, hash_sum_of_password)
+                    # Authorization with remembering the registered user
+                    login_user(UserLogin(user=new_user), remember=True)
 
-                return redirect(url_for("current_tasks_to_do"))
-            else: 
-                # Instant messages allow you to add information to the html template 
-                #   in response to user actions on the page
-                flash("Different passwords entered")
-        else:
-            flash("User with the same name already exists")
+                    return redirect(url_for("current_tasks_to_do"))
+                else: 
+                    # Instant messages allow you to add information to the html template 
+                    #   in response to user actions on the page
+                    flash("Different passwords entered")
+            else:
+                flash("User with the same name already exists")
+        except ValueError:
+            flash("Invalid value entered")
 
     return render_template("to_do/sign_up_to_do.html", page_title=page_title)
 
@@ -111,19 +114,22 @@ def sign_up_to_do():
 @app.route("/login/", methods=["GET", "POST"])
 def login_to_do():
     if request.method == "POST":
-        username = request.form["username"]
-        user = g.connection_to_db.get_first_record("users", "username", username)
-        if user and check_password_hash(user["password"], request.form["password"]):
-            login_user(UserLogin(user=user), remember=True)
+        try:
+            username = request.form["username"]
+            user = g.connection_to_db.get_first_record("users", "username", username)
+            if user and check_password_hash(user["password"], request.form["password"]):
+                login_user(UserLogin(user=user), remember=True)
 
-            # If the next method is present in the get-request of the authorization page, 
-            #   then the authorization page was requested by redirecting an unauthorized user 
-            #   using the login_required decorator, 
-            #   so after authorization the user is redirected to the page 
-            #   that was requested before login_required was triggered
-            return redirect(request.args.get("next") or url_for("current_tasks_to_do"))
-        else:
-            flash("There is no user with this username and password")
+                # If the next method is present in the get-request of the authorization page, 
+                #   then the authorization page was requested by redirecting an unauthorized user 
+                #   using the login_required decorator, 
+                #   so after authorization the user is redirected to the page 
+                #   that was requested before login_required was triggered
+                return redirect(request.args.get("next") or url_for("current_tasks_to_do"))
+            else:
+                flash("There is no user with this username and password")
+        except ValueError:
+            flash("Invalid value entered")
 
     return render_template("to_do/login_to_do.html", page_title=page_title)
 
