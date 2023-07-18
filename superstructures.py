@@ -62,6 +62,40 @@ class ConnectionToDB:
         except sqlite3.Error as error:
             raise ValueError("Error adding task to database", str(error))
 
+    def get_tasks_for_user(self, user_id, filters=None, order_by=None):
+        """
+        Select user tasks filtered according to filters attribute and sorted according to order_by.
+        """
+
+        try:
+            select_query = f"SELECT * FROM tasks " \
+            f"WHERE user_id = {user_id}{f' AND {filters}' if filters is not None else ''}" \
+            f"{f' ORDER BY {order_by}' if order_by is not None else ''};"
+
+            tasks_for_user = self._cursor.execute(select_query).fetchall()
+            return tasks_for_user if tasks_for_user is not None else False
+
+        except sqlite3.Error as error:
+            raise SyntaxError(("Error getting records from database", str(error)))
+
+    def update_task(self, task_id, **kvargs):
+        """
+        Update task data in the database.
+        """
+
+        try:
+            list_of_new_values_for_columns = [f'{column} = {repr(value)}' for column, value in kvargs.items()]
+            set_values = ", ".join(list_of_new_values_for_columns)
+            if set_values:
+                update_query = f"UPDATE tasks SET {set_values} " \
+                f"WHERE id = {task_id};"
+
+                self._cursor.execute(update_query)
+                self._connection.commit()
+
+        except sqlite3.Error as error:
+            raise ValueError(("Error updating task in database"), str(error))
+
     def close(self):
         self._connection.close()
 

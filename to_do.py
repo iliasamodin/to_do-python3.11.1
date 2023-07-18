@@ -159,10 +159,39 @@ def create_task_to_do(calling_page):
     return render_template("to_do/create_task_to_do.html", page_title=page_title, today=today, now=now)
 
 
-@app.route("/tasks-for-today/")
+@app.route("/tasks-for-today/", methods=["GET", "POST"])
 @login_required
 def tasks_for_today_to_do():
-    return "pass"
+    page_name = "tasks-for-today"
+    main_title = "Tasks for today"
+
+    today, now = datetime.now().strftime("%Y-%m-%d&%H:%M").split("&")
+    user_id = current_user.get_id()
+    tasks = g.connection_to_db.get_tasks_for_user(
+        user_id, 
+        filters=f"date_of_completion = {repr(today)}",
+        order_by=f"execution_status, time_of_completion, priority DESC, title"
+    )
+
+    if request.method == "POST":
+        try:
+            task_id = int(request.form["task_id"])
+            execution_status = int(request.form["execution_status"])
+            g.connection_to_db.update_task(
+                task_id, 
+                execution_status=execution_status, 
+                date_of_completion=today,
+                time_of_completion=now
+            )
+        finally:
+            return redirect(url_for("tasks_for_today_to_do"))
+
+    return render_template("to_do/tasks_to_do.html", 
+        page_title=page_title, 
+        page_name=page_name,
+        main_title=main_title,
+        tasks=tasks
+    )
 
 
 @app.route("/current-tasks/")
