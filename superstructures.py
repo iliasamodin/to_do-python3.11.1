@@ -41,6 +41,27 @@ class ConnectionToDB:
         except sqlite3.Error as error:
             raise ValueError(("Error adding user to database", str(error)))
 
+    def add_new_task(self, user_id, form_data):
+        """
+        Add new task to task table.
+        """
+
+        try:
+            insert_query = "INSERT INTO tasks (" \
+            "user_id, title, description, date_of_completion, time_of_completion, priority" \
+            ") " \
+            "VALUES ({user_id}, '{title}', '{description}', " \
+            "'{date_of_completion}', '{time_of_completion}', {priority});".format(
+                user_id=user_id, 
+                **form_data
+            )
+
+            self._cursor.execute(insert_query)
+            self._connection.commit()
+
+        except sqlite3.Error as error:
+            raise ValueError("Error adding task to database", str(error))
+
     def close(self):
         self._connection.close()
 

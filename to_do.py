@@ -14,6 +14,9 @@ from flask_login import LoginManager, login_user
 # Importing a decorator that restricts unauthorized users from accessing views that are wrapped with this decorator
 from flask_login import login_required
 from flask_login import logout_user                        # Importing the function to log out the user from the account
+# Importing a variable referring to an object of the UserLogin class corresponding to the user index 
+#   from the session of the current http request
+from flask_login import current_user
 # Import a function that hashes the user's password to store the hash sum of the password in the database
 from werkzeug.security import generate_password_hash
 # Importing a function to match the hash sum of the user's password from the database 
@@ -21,6 +24,7 @@ from werkzeug.security import generate_password_hash
 from werkzeug.security import check_password_hash
 # Importing class for executing sql queries to the database and user authorization class
 from superstructures import ConnectionToDB, UserLogin
+from datetime import datetime
 import sqlite3, os
 
 # Application Configuration
@@ -132,10 +136,21 @@ def logout_to_do():
         return redirect(url_for("welcome_to_to_do"))
 
 
-@app.route("/<calling_page>/create-task/")
+@app.route("/<calling_page>/create-task/", methods=["GET", "POST"])
 @login_required
 def create_task_to_do(calling_page):
-    return "pass"
+    today, now = datetime.now().strftime("%Y-%m-%d&%H:%M").split("&")
+
+    if request.method == "POST":
+        try:
+            user_id = current_user.get_id()
+            g.connection_to_db.add_new_task(user_id, request.form)
+
+            return redirect(url_for(f"{calling_page.replace('-', '_')}_to_do"))
+        except ValueError:
+            flash("Invalid value entered")
+
+    return render_template("to_do/create_task_to_do.html", page_title=page_title, today=today, now=now)
 
 
 @app.route("/tasks-for-today/")
