@@ -194,10 +194,40 @@ def tasks_for_today_to_do():
     )
 
 
-@app.route("/current-tasks/")
+@app.route("/current-tasks/", methods=["GET", "POST"])
 @login_required
 def current_tasks_to_do():
-    return "pass"
+    page_name = "current-tasks"
+    main_title = "Current tasks"
+
+    user_id = current_user.get_id()
+    tasks = g.connection_to_db.get_tasks_for_user(
+        user_id, 
+        filters=f"execution_status = False",
+        order_by=f"date_of_completion, time_of_completion, priority DESC, title"
+    )
+
+    if request.method == "POST":
+        today, now = datetime.now().strftime("%Y-%m-%d&%H:%M").split("&")
+
+        try:
+            task_id = int(request.form["task_id"])
+            execution_status = int(request.form["execution_status"])
+            g.connection_to_db.update_task(
+                task_id, 
+                execution_status=execution_status, 
+                date_of_completion=today,
+                time_of_completion=now
+            )
+        finally:
+            return redirect(url_for("current_tasks_to_do"))
+
+    return render_template("to_do/tasks_to_do.html", 
+        page_title=page_title,
+        page_name=page_name,
+        main_title=main_title,
+        tasks=tasks
+    )
 
 
 @app.route("/completed-tasks/")
