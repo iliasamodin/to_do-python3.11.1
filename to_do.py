@@ -105,7 +105,7 @@ def sign_up_to_do():
                     flash("Different passwords entered")
             else:
                 flash("User with the same name already exists")
-        except ValueError:
+        except sqlite3.OperationalError:
             flash("Invalid value entered")
 
     return render_template("to_do/sign_up_to_do.html", page_title=page_title)
@@ -128,7 +128,7 @@ def login_to_do():
                 return redirect(request.args.get("next") or url_for("current_tasks_to_do"))
             else:
                 flash("There is no user with this username and password")
-        except ValueError:
+        except sqlite3.OperationalError:
             flash("Invalid value entered")
 
     return render_template("to_do/login_to_do.html", page_title=page_title)
@@ -153,7 +153,7 @@ def create_task_to_do(calling_page):
             g.connection_to_db.add_new_task(user_id, request.form)
 
             return redirect(url_for(f"{calling_page.replace('-', '_')}_to_do"))
-        except ValueError:
+        except sqlite3.OperationalError:
             flash("Invalid value entered")
 
     return render_template("to_do/create_task_to_do.html", page_title=page_title, today=today, now=now)
