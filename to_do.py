@@ -230,10 +230,40 @@ def current_tasks_to_do():
     )
 
 
-@app.route("/completed-tasks/")
+@app.route("/completed-tasks/", methods=["GET", "POST"])
 @login_required
 def completed_tasks_to_do():
-    return "pass"
+    page_name = "completed-tasks"
+    main_title = "Completed tasks"
+
+    user_id = current_user.get_id()
+    tasks = g.connection_to_db.get_tasks_for_user(
+        user_id, 
+        filters=f"execution_status = True",
+        order_by=f"date_of_completion DESC, time_of_completion DESC, priority DESC, title"
+    )
+
+    if request.method == "POST":
+        today, now = datetime.now().strftime("%Y-%m-%d&%H:%M").split("&")
+
+        try:
+            task_id = int(request.form["task_id"])
+            execution_status = int(request.form["execution_status"])
+            g.connection_to_db.update_task(
+                task_id, 
+                execution_status=execution_status, 
+                date_of_completion=today,
+                time_of_completion=now
+            )
+        finally:
+            return redirect(url_for("completed_tasks_to_do"))
+
+    return render_template("to_do/tasks_to_do.html", 
+        page_title=page_title,
+        page_name=page_name,
+        main_title=main_title,
+        tasks=tasks
+    )
 
 
 @app.route("/<calling_page>/task-<int:task_id>/")
