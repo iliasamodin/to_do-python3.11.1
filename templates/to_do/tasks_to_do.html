@@ -1,0 +1,33 @@
+{% extends "index.html" %}
+
+{% block application %}
+<article class="to_do tasks">
+    <h1>{{ main_title }}</h1>
+
+    {% if main_title != "Completed tasks" %}
+    <a href="{{ url_for('create_task_to_do', calling_page=page_name) }}">Add task</a>
+    {% endif %}
+
+    <ul>
+        {% for task in tasks %}
+        <li class="priority_{{ task.priority }} status_{{ task.execution_status }}">   
+            <a href="{{ url_for('change_task_to_do', calling_page=page_name, task_id=task.id) }}">
+                <h2 title="{{ task.description }}">{{ task.title }}</h2>
+                <ul>
+                    <li>{{ task.date_of_completion }}</li>
+                    <li>{{ task.time_of_completion }}</li>
+                </ul>
+            </a>
+            <form method="post">
+                <input type="hidden" name="task_id" value="{{ task.id }}">
+                {% if task.execution_status %}
+                <button type="submit" name="execution_status" value="0">✓</button>
+                {% else %}
+                <button type="submit" name="execution_status" value="1"></button>
+                {% endif %}
+            </form>
+        </li> 
+        {% endfor %}
+    </ul>
+</article>
+{% endblock %}

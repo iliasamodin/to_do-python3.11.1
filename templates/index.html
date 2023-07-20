@@ -1,0 +1,17 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <title>{{ page_title }}</title>
+    </head>
+    <body>
+        {% if page_title == "To-Do" %}
+        {% include "to_do/to_do_header.html" %}
+        {% endif %}
+        <div class="centering_container">
+            <div class="centered_item">
+                {% block application %}{% endblock %}
+            </div>
+        </div>
+    </body>
+</html>
