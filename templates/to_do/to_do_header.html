@@ -4,21 +4,15 @@
             {% if current_user.is_authenticated %}
             <li>
                 <ul class="first_elements">
-                    {% if main_title == "Tasks for today" %}
-                    <li class="checked"><a href="{{ url_for('tasks_for_today_to_do') }}">Tasks for today</a></li>
-                    {% else %}
-                    <li><a href="{{ url_for('tasks_for_today_to_do') }}">Tasks for today</a></li>
-                    {% endif %}
-                    {% if main_title == "Current tasks" %}
-                    <li class="checked"><a href="{{ url_for('current_tasks_to_do') }}">Current tasks</a></li>
-                    {% else %}
-                    <li><a href="{{ url_for('current_tasks_to_do') }}">Current tasks</a></li>
-                    {% endif %}
-                    {% if main_title == "Completed tasks" %}
-                    <li class="checked"><a href="{{ url_for('completed_tasks_to_do') }}">Completed tasks</a></li> 
-                    {% else %}
-                    <li><a href="{{ url_for('completed_tasks_to_do') }}">Completed tasks</a></li>       
-                    {% endif %} 
+                    <li {% if main_title == "Tasks for today" %} class="checked" {% endif %}>
+                        <a href="{{ url_for('tasks_for_today_to_do') }}">Tasks for today</a>
+                    </li>
+                    <li {% if main_title == "Current tasks" %} class="checked" {% endif %}>
+                        <a href="{{ url_for('current_tasks_to_do') }}">Current tasks</a>
+                    </li>
+                    <li {% if main_title == "Completed tasks" %} class="checked" {% endif %}>
+                        <a href="{{ url_for('completed_tasks_to_do') }}">Completed tasks</a>
+                    </li> 
                 </ul>
             </li>
             <li>
