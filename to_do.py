@@ -79,6 +79,9 @@ page_title = "To-Do"
 
 @app.route("/")        # The decorator responsible for linking the path in the url with the view that works on this link
 def welcome_to_to_do():
+    if current_user.is_authenticated:
+        return redirect(url_for("current_tasks_to_do"))
+
     return render_template("to_do/welcome_to_to_do.html", page_title=page_title)
 
 
