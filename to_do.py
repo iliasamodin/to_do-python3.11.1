@@ -69,9 +69,10 @@ def user_loading(user_id):
 
 
 @app.teardown_appcontext                         # Decorator responsible for processes executed after request processing
-def close_db_connection(error):
+def close_db_connection(response):
     if hasattr(g, "connection_to_db"):
-        g.connection_to_db.close()                                   # Closing the database connection after processing a request
+        g.connection_to_db.close()                          # Closing the database connection after processing a request
+    return response
 
 
 page_title = "To-Do"
