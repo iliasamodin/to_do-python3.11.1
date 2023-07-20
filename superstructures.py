@@ -63,17 +63,17 @@ class ConnectionToDB:
         f"{f' ORDER BY {order_by}' if order_by is not None else ''};"
 
         tasks_for_user = self._cursor.execute(select_query).fetchall()
-        return tasks_for_user if tasks_for_user is not None else False
+        return tasks_for_user
 
-    def update_task(self, task_id, **kvargs):
+    def update_task(self, task_id, **kwargs):
         """
         Update task data in the database.
         """
 
-        list_of_new_values_for_columns = [f'{column} = {repr(value)}' for column, value in kvargs.items()]
-        set_values = ", ".join(list_of_new_values_for_columns)
-        if set_values:
-            update_query = f"UPDATE tasks SET {set_values} " \
+        list_of_new_values_for_columns = [f'{column} = {repr(value)}' for column, value in kwargs.items()]
+        values_to_set = ", ".join(list_of_new_values_for_columns)
+        if values_to_set:
+            update_query = f"UPDATE tasks SET {values_to_set} " \
             f"WHERE id = {task_id};"
 
             self._cursor.execute(update_query)
