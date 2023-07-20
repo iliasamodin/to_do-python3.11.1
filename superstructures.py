@@ -79,6 +79,17 @@ class ConnectionToDB:
             self._cursor.execute(update_query)
             self._connection.commit()
 
+    def delete_task(self, task_id, user_id):
+        """
+        Deleting a task from the database.
+        """
+
+        delete_query = f"DELETE FROM tasks " \
+        f"WHERE id = {task_id} AND user_id = {user_id};"
+
+        self._cursor.execute(delete_query)
+        self._connection.commit()
+
     def close(self):
         self._connection.close()
 

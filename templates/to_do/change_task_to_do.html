@@ -1,0 +1,52 @@
+{% extends "index.html" %}
+
+{% block application %}
+<article class="to_do task">
+    <h1>Change task: {{ task.title }}</h1>
+
+    <form method="post">
+        <li>
+            <label for="id_title">Title:</label>
+            <input id="id_title" type="text" name="title" 
+            value="{{ task.title }}" maxlength="50" required>
+        </li>
+        <li>
+            <label for="id_description">Description:</label>
+            <textarea id="id_description" name="description" 
+            value="{{ task.description }}" cols="40" rows="10"></textarea>
+        </li>
+        <li>
+            <label for="id_date_of_completion">Date of completion:</label>
+            <input id="id_date_of_completion" type="date" name="date_of_completion" 
+            value="{{ task.date_of_completion }}" required>
+        </li>
+        <li>
+            <label for="id_time_of_completion">Time of completion:</label>
+            <input id="id_time_of_completion" type="time" name="time_of_completion" 
+            value="{{ task.time_of_completion }}" required>
+        </li>
+        <li>
+            <label for="id_priority">Priority:</label>
+            <select id="id_priority" name="priority">
+                <option value="1" {% if task.priority == 1 %} selected {% endif %}>Low</option>
+                <option value="2" {% if task.priority == 2 %} selected {% endif %}>Average</option>                
+                <option value="3" {% if task.priority == 3 %} selected {% endif %} >High</option>
+            </select>
+        </li>
+        <li>
+            <label for="id_execution_status">Execution status:</label>
+            <input id="id_execution_status" type="checkbox" name="execution_status" 
+            {% if task.execution_status %} checked {% endif %}>
+        </li>
+        {% for message in get_flashed_messages() %}
+        <p>{{ message }}</p>
+        {% endfor %}
+        <button type="submit">change</button>
+        <button type="reset">reset</button>
+    </form>
+    <form class="deleting_task" 
+    action="{{ url_for('deleting_task', calling_page=page_name, task_id=task.id) }}" method="post">
+        <button type="submit">delete</button>
+    </form>
+</article>
+{% endblock %}

@@ -8,6 +8,7 @@ from flask import redirect, url_for
 #   and the g object intended for passing the values of variables 
 #   from one view to another within a single request to the site
 from flask import request, flash, g
+from flask import abort                                    # Importing function that raises http exception by error code
 # Importing a class for working with user authorization 
 #   and functions for performing authorization from the external library flask_login
 from flask_login import LoginManager, login_user
@@ -266,10 +267,40 @@ def completed_tasks_to_do():
     )
 
 
-@app.route("/<calling_page>/task-<int:task_id>/")
+@app.route("/<calling_page>/task-<int:task_id>/", methods=["GET", "POST"])
 @login_required
 def change_task_to_do(calling_page, task_id):
-    return "pass"
+    user_id = current_user.get_id()
+    task = g.connection_to_db.get_first_record("tasks", id=task_id, user_id=user_id)
+    if task is None:
+        abort(404)
+
+    if request.method == "POST":
+        try:
+            form_data = dict(request.form)
+            form_data["execution_status"] = 1 if form_data.get("execution_status") else 0
+            g.connection_to_db.update_task(task_id, **form_data)
+
+            return redirect(url_for(f"{calling_page.replace('-', '_')}_to_do"))
+        except sqlite3.OperationalError:
+            flash("Invalid value entered")
+
+    return render_template("to_do/change_task_to_do.html", 
+        page_title=page_title,
+        page_name=calling_page,
+        task=task
+    )
+
+
+@app.route("/<calling_page>/task-<int:task_id>/deleting/", methods=["GET", "POST"])
+@login_required
+def deleting_task(calling_page, task_id):
+    if request.method == "POST":
+        try:
+            user_id = current_user.get_id()
+            g.connection_to_db.delete_task(task_id, user_id)
+        finally:
+            return redirect(url_for(f"{calling_page.replace('-', '_')}_to_do"))
 
 
 if __name__ == "__main__":
