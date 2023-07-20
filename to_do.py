@@ -90,7 +90,7 @@ def sign_up_to_do():
     if request.method == "POST":
         try:
             username = request.form["username"]
-            if g.connection_to_db.get_first_record("users", "username", username) is False:
+            if g.connection_to_db.get_first_record("users", username=username) is None:
                 password = request.form["password1"]
                 if password == request.form["password2"]:
                     hash_sum_of_password = generate_password_hash(password)
@@ -116,7 +116,7 @@ def login_to_do():
     if request.method == "POST":
         try:
             username = request.form["username"]
-            user = g.connection_to_db.get_first_record("users", "username", username)
+            user = g.connection_to_db.get_first_record("users", username=username)
             if user and check_password_hash(user["password"], request.form["password"]):
                 login_user(UserLogin(user=user), remember=True)
 

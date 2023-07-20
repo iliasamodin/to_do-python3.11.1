@@ -1,4 +1,5 @@
 from flask_login import UserMixin
+import sqlite3
 
 
 class ConnectionToDB:
@@ -6,17 +7,20 @@ class ConnectionToDB:
         self._connection = connection_to_db
         self._cursor = connection_to_db.cursor()
 
-    def get_first_record(self, table, column, checked_value):
+    def get_first_record(self, table, **kwargs):
         """
-        Get the first record from the table by selection with filtering by one field.
+        Get the first record from the table.
         """
 
+        list_of_values_for_columns = [f'{column} = {repr(value)}' for column, value in kwargs.items()]
+        values_for_where = " AND ".join(list_of_values_for_columns)
+
         select_query = f"SELECT * FROM {table} " \
-        f"WHERE {column} = {repr(checked_value)} " \
+        f"{'WHERE ' if values_for_where else ''}{values_for_where} " \
         f"LIMIT 1;"
 
         searched_record = self._cursor.execute(select_query).fetchone()
-        return dict(searched_record) if searched_record is not None else False
+        return searched_record
 
     def add_new_user(self, username, hash_sum_of_password):
         """
@@ -29,7 +33,7 @@ class ConnectionToDB:
         self._cursor.execute(insert_query)
         self._connection.commit()
 
-        new_user = self.get_first_record("users", "username", username)
+        new_user = self.get_first_record("users", username=username)
         return new_user
 
     def add_new_task(self, user_id, form_data):
@@ -82,8 +86,8 @@ class ConnectionToDB:
 class UserLogin(UserMixin):
     def __init__(self, user_id=None, connection_to_db=None, user=None):
         if type(user_id) is str and user_id.isdigit() and connection_to_db is not None:
-            self._user = connection_to_db.get_first_record("users", "id", user_id)
-        elif type(user) is dict:
+            self._user = connection_to_db.get_first_record("users", id=user_id)
+        elif type(user) is sqlite3.Row:
             self._user = user
         else:
             self._user = False

@@ -8,14 +8,14 @@ class TestConnectionToDB(unittest.TestCase):
         self.connection_to_db = ConnectionToDB(db_connection())
 
     def test_get_first_record(self):
-        self.assertEqual(self.connection_to_db.get_first_record("users", "id", "1")["username"], "demo")
+        self.assertEqual(self.connection_to_db.get_first_record("users", id="1")["username"], "demo")
 
     def test_get_missing_record(self):
-        self.assertEqual(self.connection_to_db.get_first_record("users", "id", "0"), False)
+        self.assertEqual(self.connection_to_db.get_first_record("users", id="0"), None)
 
     def test_get_record_from_non_existent_table(self):
         self.assertRaises(sqlite3.OperationalError, self.connection_to_db.get_first_record, 
-            "programmers", "id", "1"
+            "programmers", id="1"
         )
 
     def test_add_existing_user(self):
