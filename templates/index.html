@@ -12,6 +12,9 @@
         {% if page_title == "To-Do" %}
         <link rel="stylesheet" href="{{ url_for('static', filename='to_do/css/to_do_styles.css') }}">
         <link rel="icon" href="{{ url_for('static', filename='to_do/images/check_icon.svg') }}">
+        {% elif page_title == "Error" %}
+        <link rel="stylesheet" href="{{ url_for('static', filename='error/css/error_styles.css') }}">
+        <link rel="icon" href="{{ url_for('static', filename='error/images/page_error_icon.svg') }}">
         {% endif %}
 
         <title>{{ page_title }}</title>
