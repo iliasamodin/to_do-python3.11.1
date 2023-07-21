@@ -307,5 +307,13 @@ def deleting_task(calling_page, task_id):
             return redirect(url_for(f"{calling_page.replace('-', '_')}_to_do"))
 
 
+@app.errorhandler(404)
+def page_not_found(exception):
+    page_title = "Error"
+    error = 404
+
+    return render_template("error_page.html", page_title=page_title, error=error), error
+
+
 if __name__ == "__main__":
     app.run(port=8000, debug=True)
