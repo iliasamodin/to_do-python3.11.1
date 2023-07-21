@@ -10,6 +10,9 @@
         {% endif %}
         <div class="centering_container">
             <div class="centered_item">
+                {% if page_title == "Error" %}
+                {% include "error/error_header.html" %}
+                {% endif %}
                 {% block application %}{% endblock %}
             </div>
         </div>

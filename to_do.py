@@ -307,5 +307,37 @@ def deleting_task(calling_page, task_id):
             return redirect(url_for(f"{calling_page.replace('-', '_')}_to_do"))
 
 
+@app.errorhandler(404)
+def page_not_found(exception):
+    page_title = "Error"
+    error = 404
+
+    return render_template("error_page.html", page_title=page_title, error=error), error
+
+
+@app.errorhandler(500)
+def server_error(exception):
+    page_title = "Error"
+    error = 500
+
+    return render_template("error_page.html", page_title=page_title, error=error), error
+
+
+@app.errorhandler(403)
+def permission_denied(exception):
+    page_title = "Error"
+    error = 403
+
+    return render_template("error_page.html", page_title=page_title, error=error), error
+
+
+@app.errorhandler(400)
+def bad_request(exception):
+    page_title = "Error"
+    error = 400
+
+    return render_template("error_page.html", page_title=page_title, error=error), error
+
+
 if __name__ == "__main__":
     app.run(port=8000, debug=True)
