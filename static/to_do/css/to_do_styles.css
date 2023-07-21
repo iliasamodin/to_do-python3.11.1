@@ -1,0 +1,303 @@
+body {
+	background-color: mistyrose;
+}
+
+body > .centering_container {
+	align-items: center;
+	display: flex;
+	flex-flow: row wrap;
+	height: calc(100vh - 95px);
+	justify-content: center;
+}
+
+/*-------------------------------------------------*/
+
+header.to_do > nav > ul {
+	align-items: center;
+	border-bottom: 1px solid mediumpurple;
+	box-sizing: border-box;
+	display: flex;
+	flex-flow: row wrap;
+	justify-content: space-between;
+	margin: 15px auto 35px;
+	max-width: 1000px;
+	padding: 0px 30px;
+}
+
+header.to_do > nav > ul > li > ul.first_elements {
+	align-items: center;
+	display: flex;
+	flex-flow: row wrap;
+	justify-content: start;
+}
+
+header.to_do > nav > ul > li > ul.last_elements {
+	align-items: center;
+	display: flex;
+	flex-flow: row wrap;
+	justify-content: end;
+}
+
+header.to_do > nav > ul > li > ul > li {
+	padding-bottom: 15px;
+}
+
+header.to_do > nav > ul > li > ul.first_elements > li.checked {
+	border-bottom: 2px solid #a98de2;
+	padding-bottom: 13px;
+}
+
+header.to_do > nav > ul > li > ul > li.username,
+header.to_do > nav > ul > li > ul a,
+header.to_do > nav > ul > li > ul button {
+	background: none;
+	border: none;
+	cursor: pointer;
+	font-size: 20px;
+	font-weight: 400;
+	margin: 0px 15px;
+	text-decoration: none;
+}
+
+header.to_do > nav > ul > li > ul > li.username {
+	cursor: auto;
+}
+
+header.to_do > nav > ul > li > ul a:hover {
+	font-weight: 400;
+}
+
+header.to_do > nav > ul > li > ul button {
+	position: relative;
+	top: 1px;
+}
+
+/*-------------------------------------------------*/
+
+article.to_do {
+	margin-bottom: 95px;
+}
+
+article.to_do > h1 {
+	font-size: 30px;
+	font-weight: 400;
+	margin-bottom: 25px;
+}
+
+/*-------------------------------------------------*/
+
+article.to_do.welcome > ul > li:first-child {
+	margin-bottom: 5px;
+}
+
+article.to_do.welcome > ul > li > a {
+	font-size: 20px;
+}
+
+/*-------------------------------------------------*/
+
+article.to_do.login > form > li {
+	margin-bottom: 5px;
+}
+
+article.to_do.login > form > li > label {
+	display: block;
+}
+
+article.to_do.login > form > li > #id_username,
+article.to_do.login > form > li > #id_password1,
+article.to_do.login > form > li > #id_password2,
+article.to_do.login > form > li > #id_password {
+	background-color: #fffbfb;
+	border: 1px solid #a98de2;
+	border-radius: 10px;
+	box-shadow: 0px 5px 15px -10px #736765;
+	font-family: "Open Sans", "PT Sans", sans-serif;
+	font-size: 16px;
+	font-weight: 300;
+	min-width: 210px;
+	text-align: center;
+	width: 15vw;
+}
+
+article.to_do.login > form > li > span.helptext {
+	font-size: 14px;
+}
+
+article.to_do.login > form > li:nth-child(2n) > span.helptext,
+article.to_do.login > form > li:nth-child(3) > span.helptext > ul > li:nth-child(2n+1) {
+	display: none;
+}
+
+article.to_do.login > form > p {
+	margin-bottom: 10px;
+}
+
+article.to_do.login > form > button {
+	background: none;
+	border: 1.5px solid mediumpurple;
+	border-radius: 10px;
+	cursor: pointer;
+	display: inline-block;
+	font-size: 18px;
+	margin: 5px auto 0px;
+	padding: 2px 0px 5px;
+	width: 90px;
+}
+
+/*-------------------------------------------------*/
+
+article.to_do.task > form > li {
+	margin-bottom: 5px;
+}
+
+article.to_do.task > form > li > label {
+	display: block;
+}
+
+article.to_do.task > form > li > #id_title,
+article.to_do.task > form > li > #id_description {
+	background-color: #fffbfb;
+	border: 1px solid #a98de2;
+	border-radius: 10px;
+	box-shadow: 0px 5px 15px -10px #736765;
+	font-family: "Open Sans", "PT Sans", sans-serif;
+	font-size: 16px;
+	font-weight: 300;
+	min-width: 350px;
+	text-align: center;
+	width: 25vw;
+}
+
+article.to_do.task > form > li > #id_description {
+	height: 150px;
+}
+
+article.to_do.task > form > li > #id_date_of_completion,
+article.to_do.task > form > li > #id_time_of_completion,
+article.to_do.task > form > li > #id_priority {
+	background-color: #fffbfb;
+	border: 1px solid #a98de2;
+	border-radius: 10px;
+	box-shadow: 0px 5px 15px -10px #736765;
+	font-family: "Open Sans", "PT Sans", sans-serif;
+	font-size: 16px;
+	font-weight: 300;
+	min-width: 210px;
+	text-align: center;
+	width: 15vw;
+}
+
+article.to_do.task > form > li > #id_execution_status {
+	background-color: #fffbfb;
+	border: 1px solid #a98de2;
+	border-radius: 10px;
+	box-shadow: 0px 5px 15px -10px #736765;
+	font-family: "Open Sans", "PT Sans", sans-serif;
+	font-size: 16px;
+	font-weight: 300;
+	text-align: center;
+}
+
+article.to_do.task > form > p {
+	margin-bottom: 10px;
+}
+
+article.to_do.task > form > button {
+	background: none;
+	border: 1.5px solid mediumpurple;
+	border-radius: 10px;
+	cursor: pointer;
+	display: inline-block;
+	font-size: 18px;
+	margin: 5px auto 0px;
+	padding: 2px 0px 5px;
+	width: 90px;
+}
+
+/*-------------------------------------------------*/
+
+article.to_do.tasks > a {
+	font-size: 20px;
+}
+
+article.to_do.tasks > ul {
+	margin-top: 15px;
+}
+
+article.to_do.tasks > ul > li {
+	align-items: center;
+	border: 1.5px solid mediumpurple;
+	border-radius: 10px;
+	box-shadow: 0px 5px 15px -10px #736765;
+	box-sizing: border-box;
+	display: flex;
+	flex-flow: row wrap;
+	justify-content: space-between;
+	margin-bottom: 5px;
+	min-width: calc(30vw + 300px);
+	padding: 5px 30px;
+}
+
+article.to_do.tasks > ul > li:last-child {
+	margin-bottom: 0px;
+}
+
+article.to_do.tasks > ul > li.priority_1.status_0 {
+	background-color: #e0fcff;
+}
+
+article.to_do.tasks > ul > li.priority_2.status_0 {
+	background-color: #e0ffe3;
+}
+
+article.to_do.tasks > ul > li.priority_3.status_0 {
+	background-color: #ffe0fc;
+}
+
+article.to_do.tasks > ul > li.status_1 {
+	background-color: #fffbfb;
+}
+
+article.to_do.tasks > ul > li > a {
+	align-items: center;
+	display: flex;
+	flex-flow: row wrap;
+	justify-content: space-between;
+	min-width: calc(30vw + 200px);
+	text-decoration: none;
+}
+
+article.to_do.tasks > ul > li > a:hover {
+	font-weight: 300;
+}
+
+article.to_do.tasks > ul > li > a > h2 {
+	font-weight: 400;
+}
+
+article.to_do.tasks > ul > li > a > ul {
+	align-items: center;
+	display: flex;
+	flex-flow: row wrap;
+	justify-content: center;
+}
+
+article.to_do.tasks > ul > li > a > ul > li {
+	margin: 0px 5px;
+}
+
+article.to_do.tasks > ul > li > form > button {
+	background-color: #fffbfb;
+	border: 1.5px solid #a98de2;
+	border-radius: 5px;
+	cursor: pointer;
+	height: 25px;
+	text-decoration: none;
+	width: 25px;
+}
+
+article.to_do.tasks > ul > li > form > button[value$="0"] {
+	background-color: mediumpurple;
+	color: #fffbfb;
+}

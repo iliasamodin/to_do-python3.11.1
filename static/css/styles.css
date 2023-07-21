@@ -1,0 +1,45 @@
+html {
+	font-family: "Open Sans", "PT Sans", sans-serif;
+	font-size: 18px;
+	font-weight: 300;
+	text-align: center;
+}
+
+body {
+	color: #0f0b16;
+	height: 100vh;
+	line-height: 1.333;
+}
+
+strong, b {
+	font-weight: bold;
+}
+
+em, i {
+	font-style: italic;
+}
+
+/*-------------------------------------------------*/
+
+a {
+	color: #0f0b16;
+}
+
+a:hover, a:visited:hover {
+	font-weight: 600;
+	opacity: 0.6;
+}
+
+a:active, a:visited:active {
+	opacity: 0.2;
+}
+
+button:hover {
+	opacity: 0.6;
+}
+
+/*-------------------------------------------------*/
+
+h1, h2, h3 {
+	line-height: 1;
+}
